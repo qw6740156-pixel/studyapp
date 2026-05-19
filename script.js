@@ -18,6 +18,6 @@ function startTimer() {
     }
   }, 1000);
 }
-
-
-
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/studyapp/sw.js");
+}
