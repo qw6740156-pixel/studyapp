@@ -1,12 +1,17 @@
 let time = 25;
+let interval;
 let running = false;
+
+document.getElementById("timer").innerText = time;
 
 function startTimer() {
   if (running) return;
 
+  time = parseInt(document.getElementById("minutes").value);
+
   running = true;
 
-  const interval = setInterval(() => {
+  interval = setInterval(() => {
     time--;
     document.getElementById("timer").innerText = time;
 
@@ -14,10 +19,22 @@ function startTimer() {
       clearInterval(interval);
       alert("Time's up!");
       running = false;
-      time = 25;
     }
   }, 1000);
 }
+
+function pauseTimer() {
+  clearInterval(interval);
+  running = false;
+}
+
+function resetTimer() {
+  clearInterval(interval);
+  running = false;
+  time = parseInt(document.getElementById("minutes").value);
+  document.getElementById("timer").innerText = time;
+}
+
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/studyapp/sw.js");
 }
