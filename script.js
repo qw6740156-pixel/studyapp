@@ -1,8 +1,12 @@
-let time = 25;
+et time = 25;
 let interval;
 let running = false;
 
+let sessions = localStorage.getItem("sessions") || 0;
+
 document.getElementById("timer").innerText = time;
+document.getElementById("sessions").innerText =
+  "Completed Sessions: " + sessions;
 
 function startTimer() {
   if (running) return;
@@ -19,6 +23,12 @@ function startTimer() {
       clearInterval(interval);
       alert("Time's up!");
       running = false;
+
+      sessions++;
+      localStorage.setItem("sessions", sessions);
+
+      document.getElementById("sessions").innerText =
+        "Completed Sessions: " + sessions;
     }
   }, 1000);
 }
@@ -38,6 +48,7 @@ function resetTimer() {
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/studyapp/sw.js");
 }
+
 function toggleDarkMode() {
   document.body.classList.toggle("dark");
 }
