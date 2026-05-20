@@ -1,4 +1,4 @@
-et time = 25;
+let time = 25;
 let interval;
 let running = false;
 
@@ -11,37 +11,49 @@ document.getElementById("sessions").innerText =
 function startTimer() {
   if (running) return;
 
-  time = parseInt(document.getElementById("minutes").value);
+  time = parseInt(document.getElementById("minutes").value) || 25;
+
+  document.getElementById("timer").innerText = time;
 
   running = true;
 
   interval = setInterval(() => {
     time--;
+
     document.getElementById("timer").innerText = time;
 
     if (time <= 0) {
       clearInterval(interval);
+
       alert("Time's up!");
+
       running = false;
 
       sessions++;
+
       localStorage.setItem("sessions", sessions);
 
       document.getElementById("sessions").innerText =
         "Completed Sessions: " + sessions;
+
+      time = 25;
     }
   }, 1000);
 }
 
 function pauseTimer() {
   clearInterval(interval);
+
   running = false;
 }
 
 function resetTimer() {
   clearInterval(interval);
+
   running = false;
-  time = parseInt(document.getElementById("minutes").value);
+
+  time = parseInt(document.getElementById("minutes").value) || 25;
+
   document.getElementById("timer").innerText = time;
 }
 
