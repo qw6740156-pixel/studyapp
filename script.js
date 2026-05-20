@@ -38,3 +38,6 @@ function resetTimer() {
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/studyapp/sw.js");
 }
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+}
