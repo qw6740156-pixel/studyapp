@@ -301,8 +301,19 @@ function renderTasks() {
 
     li.style.margin = "10px";
 
-    const text =
-      document.createTextNode(task + " ");
+const text =
+  document.createElement("span");
+
+text.innerText =
+  task.text;
+
+if (task.completed) {
+
+  text.style.textDecoration =
+    "line-through";
+
+  text.style.opacity = "0.6";
+}
 
     const button =
       document.createElement("button");
@@ -314,8 +325,22 @@ function renderTasks() {
       deleteTask(index);
     };
 
+const completeButton =
+  document.createElement("button");
+
+completeButton.innerText = "✓";
+
+completeButton.onclick = function () {
+
+  toggleTask(index);
+};
+
+li.appendChild(completeButton);
+
     li.appendChild(text);
 
+const button =
+  document.createElement("button");
     li.appendChild(button);
 
     taskList.appendChild(li);
@@ -329,7 +354,12 @@ function addTask() {
 
   if (task === "") return;
 
-  tasks.push(task);
+tasks.push({
+
+  text: task,
+
+  completed: false
+});
 
   localStorage.setItem(
     "tasks",
@@ -337,6 +367,20 @@ function addTask() {
   );
 
   taskInput.value = "";
+
+function toggleTask(index) {
+
+  tasks[index].completed =
+    !tasks[index].completed;
+
+  localStorage.setItem(
+    "tasks",
+    JSON.stringify(tasks)
+  );
+
+  renderTasks();
+}
+
 
   renderTasks();
 }
