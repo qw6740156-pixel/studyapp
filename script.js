@@ -47,7 +47,8 @@ const taskInput =
 const taskList =
   document.getElementById("taskList");
 
-let tasks =
+
+let tasks = [];
   JSON.parse(
     localStorage.getItem("tasks")
   ) || [];
