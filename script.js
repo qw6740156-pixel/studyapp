@@ -38,6 +38,9 @@ const minutesInput =
 const breakInput =
   document.getElementById("breakMinutes");
 
+const bellSound =
+  document.getElementById("bellSound");
+
 if (
   localStorage.getItem("darkMode") === "on"
 ) {
@@ -94,6 +97,8 @@ function startCountdown() {
     updateProgressBar();
 
     if (time <= 0) {
+
+      bellSound.play();
 
       clearInterval(interval);
 
