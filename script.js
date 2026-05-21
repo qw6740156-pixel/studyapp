@@ -1,23 +1,34 @@
-et time = 25 * 60;
+let time = 25 * 60;
 let totalTime = 25 * 60;
 
-let interval;
+let interval = null;
 let running = false;
-
 let isBreak = false;
 
-let sessions = localStorage.getItem("sessions") || 0;
+let sessions =
+  parseInt(localStorage.getItem("sessions")) || 0;
 
-const timerEl = document.getElementById("timer");
-const sessionsEl = document.getElementById("sessions");
-const modeEl = document.getElementById("mode");
-const progressBar = document.getElementById("progress-bar");
-const minutesInput = document.getElementById("minutes");
+const timerEl =
+  document.getElementById("timer");
+
+const sessionsEl =
+  document.getElementById("sessions");
+
+const modeEl =
+  document.getElementById("mode");
+
+const progressBar =
+  document.getElementById("progress-bar");
+
+const minutesInput =
+  document.getElementById("minutes");
+
 const breakInput =
   document.getElementById("breakMinutes");
 
-if (localStorage.getItem("darkMode") === "on") {
-
+if (
+  localStorage.getItem("darkMode") === "on"
+) {
   document.body.classList.add("dark");
 }
 
@@ -25,7 +36,6 @@ sessionsEl.innerText =
   "Completed Sessions: " + sessions;
 
 updateTimerDisplay();
-
 updateProgressBar();
 
 function startTimer() {
@@ -33,6 +43,10 @@ function startTimer() {
   if (running) return;
 
   running = true;
+
+  isBreak = false;
+
+  modeEl.innerText = "Study Mode";
 
   time =
     Math.max(
@@ -102,9 +116,9 @@ function startBreak() {
 
   totalTime = time;
 
-  updateTimerDisplay();
-
   running = true;
+
+  updateTimerDisplay();
 
   startCountdown();
 }
@@ -123,9 +137,9 @@ function startStudy() {
 
   totalTime = time;
 
-  updateTimerDisplay();
-
   running = true;
+
+  updateTimerDisplay();
 
   startCountdown();
 }
