@@ -289,6 +289,7 @@ function updateProgressBar() {
   progressBar.style.width =
     percent + "%";
 }
+
 function renderTasks() {
 
   taskList.innerHTML = "";
@@ -300,14 +301,22 @@ function renderTasks() {
 
     li.style.margin = "10px";
 
-    li.innerHTML = `
+    const text =
+      document.createTextNode(task + " ");
 
-      ${task}
+    const button =
+      document.createElement("button");
 
-      <button onclick="deleteTask(${index})">
-        X
-      </button>
-    `;
+    button.innerText = "X";
+
+    button.onclick = function () {
+
+      deleteTask(index);
+    };
+
+    li.appendChild(text);
+
+    li.appendChild(button);
 
     taskList.appendChild(li);
   });
@@ -330,6 +339,22 @@ function addTask() {
   taskInput.value = "";
 
   renderTasks();
+}
+
+function deleteTask(index) {
+
+  tasks.splice(index, 1);
+
+  localStorage.setItem(
+    "tasks",
+    JSON.stringify(tasks)
+  );
+
+  renderTasks();
+}
+
+renderTasks();
+
 }
 
 function deleteTask(index) {
