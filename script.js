@@ -2,17 +2,29 @@ let time = 25 * 60;
 let totalTime = 25 * 60;
 
 let interval = null;
+
 let running = false;
+
 let isBreak = false;
 
 let sessions =
-  parseInt(localStorage.getItem("sessions")) || 0;
+  parseInt(
+    localStorage.getItem("sessions")
+  ) || 0;
+
+let studyMinutes =
+  parseInt(
+    localStorage.getItem("studyMinutes")
+  ) || 0;
 
 const timerEl =
   document.getElementById("timer");
 
 const sessionsEl =
   document.getElementById("sessions");
+
+const studyTimeEl =
+  document.getElementById("studyTime");
 
 const modeEl =
   document.getElementById("mode");
@@ -29,13 +41,20 @@ const breakInput =
 if (
   localStorage.getItem("darkMode") === "on"
 ) {
+
   document.body.classList.add("dark");
 }
 
 sessionsEl.innerText =
   "Completed Sessions: " + sessions;
 
+studyTimeEl.innerText =
+  "Total Study Today: " +
+  studyMinutes +
+  " min";
+
 updateTimerDisplay();
+
 updateProgressBar();
 
 function startTimer() {
@@ -46,7 +65,8 @@ function startTimer() {
 
   isBreak = false;
 
-  modeEl.innerText = "Study Mode";
+  modeEl.innerText =
+    "Study Mode";
 
   time =
     Math.max(
@@ -83,13 +103,27 @@ function startCountdown() {
 
         sessions++;
 
+        studyMinutes +=
+          parseInt(minutesInput.value) || 25;
+
         localStorage.setItem(
           "sessions",
           sessions
         );
 
+        localStorage.setItem(
+          "studyMinutes",
+          studyMinutes
+        );
+
         sessionsEl.innerText =
-          "Completed Sessions: " + sessions;
+          "Completed Sessions: " +
+          sessions;
+
+        studyTimeEl.innerText =
+          "Total Study Today: " +
+          studyMinutes +
+          " min";
 
         startBreak();
 
@@ -106,7 +140,8 @@ function startBreak() {
 
   isBreak = true;
 
-  modeEl.innerText = "Break Mode";
+  modeEl.innerText =
+    "Break Mode";
 
   time =
     Math.max(
@@ -127,7 +162,8 @@ function startStudy() {
 
   isBreak = false;
 
-  modeEl.innerText = "Study Mode";
+  modeEl.innerText =
+    "Study Mode";
 
   time =
     Math.max(
@@ -159,7 +195,8 @@ function resetTimer() {
 
   isBreak = false;
 
-  modeEl.innerText = "Study Mode";
+  modeEl.innerText =
+    "Study Mode";
 
   time =
     Math.max(
