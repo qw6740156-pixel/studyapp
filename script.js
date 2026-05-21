@@ -1,5 +1,7 @@
-et time = 25;
+
+let time = 25;
 let totalTime = 25;
+
 let interval;
 let running = false;
 
@@ -7,9 +9,15 @@ let isBreak = false;
 
 let sessions = localStorage.getItem("sessions") || 0;
 
-document.getElementById("timer").innerText = time;
+const timerEl = document.getElementById("timer");
+const sessionsEl = document.getElementById("sessions");
+const modeEl = document.getElementById("mode");
+const progressBar = document.getElementById("progress-bar");
+const minutesInput = document.getElementById("minutes");
 
-document.getElementById("sessions").innerText =
+timerEl.innerText = time;
+
+sessionsEl.innerText =
   "Completed Sessions: " + sessions;
 
 updateProgressBar();
@@ -18,20 +26,27 @@ function startTimer() {
 
   if (running) return;
 
+  running = true;
+
   time =
-    parseInt(document.getElementById("minutes").value) || 25;
+    parseInt(minutesInput.value) || 25;
 
   totalTime = time;
 
-  document.getElementById("timer").innerText = time;
+  timerEl.innerText = time;
 
-  running = true;
+  startCountdown();
+}
+
+function startCountdown() {
+
+  clearInterval(interval);
 
   interval = setInterval(() => {
 
     time--;
 
-    document.getElementById("timer").innerText = time;
+    timerEl.innerText = time;
 
     updateProgressBar();
 
@@ -41,15 +56,16 @@ function startTimer() {
 
       running = false;
 
-      playSound();
-
       if (!isBreak) {
 
         sessions++;
 
-        localStorage.setItem("sessions", sessions);
+        localStorage.setItem(
+          "sessions",
+          sessions
+        );
 
-        document.getElementById("sessions").innerText =
+        sessionsEl.innerText =
           "Completed Sessions: " + sessions;
 
         startBreak();
@@ -57,11 +73,45 @@ function startTimer() {
       } else {
 
         startStudy();
-
       }
     }
 
   }, 1000);
+}
+
+function startBreak() {
+
+  isBreak = true;
+
+  modeEl.innerText = "Break Mode";
+
+  time = 5;
+
+  totalTime = 5;
+
+  timerEl.innerText = time;
+
+  running = true;
+
+  startCountdown();
+}
+
+function startStudy() {
+
+  isBreak = false;
+
+  modeEl.innerText = "Study Mode";
+
+  time =
+    parseInt(minutesInput.value) || 25;
+
+  totalTime = time;
+
+  timerEl.innerText = time;
+
+  running = true;
+
+  startCountdown();
 }
 
 function pauseTimer() {
@@ -79,15 +129,14 @@ function resetTimer() {
 
   isBreak = false;
 
-  document.getElementById("mode").innerText =
-    "Study Mode";
+  modeEl.innerText = "Study Mode";
 
   time =
-    parseInt(document.getElementById("minutes").value) || 25;
+    parseInt(minutesInput.value) || 25;
 
   totalTime = time;
 
-  document.getElementById("timer").innerText = time;
+  timerEl.innerText = time;
 
   updateProgressBar();
 }
@@ -99,96 +148,9 @@ function toggleDarkMode() {
 
 function updateProgressBar() {
 
-  let percent = (time / totalTime) * 100;
+  let percent =
+    Math.max(0, (time / totalTime) * 100);
 
-  document.getElementById("progress-bar").style.width =
+  progressBar.style.width =
     percent + "%";
-}
-
-function startBreak() {
-
-  isBreak = true;
-
-  time = 5;
-
-  totalTime = 5;
-
-  document.getElementById("mode").innerText =
-    "Break Mode";
-
-  document.getElementById("timer").innerText = time;
-
-  startAuto();
-}
-
-function startStudy() {
-
-  isBreak = false;
-
-  time =
-    parseInt(document.getElementById("minutes").value) || 25;
-
-  totalTime = time;
-
-  document.getElementById("mode").innerText =
-    "Study Mode";
-
-  document.getElementById("timer").innerText = time;
-
-  startAuto();
-}
-
-function startAuto() {
-
-  running = true;
-
-  interval = setInterval(() => {
-
-    time--;
-
-    document.getElementById("timer").innerText = time;
-
-    updateProgressBar();
-
-    if (time <= 0) {
-
-      clearInterval(interval);
-
-      running = false;
-
-      playSound();
-
-      if (!isBreak) {
-
-        sessions++;
-
-        localStorage.setItem("sessions", sessions);
-
-        document.getElementById("sessions").innerText =
-          "Completed Sessions: " + sessions;
-
-        startBreak();
-
-      } else {
-
-        startStudy();
-
-      }
-    }
-
-  }, 1000);
-}
-
-function playSound() {
-
-  let audio = new Audio(
-    "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
-  );
-
-  audio.play();
-}
-
-if ("serviceWorker" in navigator) {
-
-  navigator.serviceWorker.register("/studyapp/sw.js");
 }
