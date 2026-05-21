@@ -47,11 +47,7 @@ const taskInput =
 const taskList =
   document.getElementById("taskList");
 
-
 let tasks = [];
-  JSON.parse(
-    localStorage.getItem("tasks")
-  ) || [];
 
 if (
   localStorage.getItem("darkMode") === "on"
