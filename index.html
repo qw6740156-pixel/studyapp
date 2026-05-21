@@ -2,44 +2,94 @@
 <html>
 <head>
   <title>Study Timer</title>
+
   <link rel="manifest" href="manifest.json">
+
   <meta name="theme-color" content="#000000">
 
   <style>
     body {
+      font-family: Arial;
       text-align: center;
       padding: 30px;
-      transition: 0.3s;
       background: white;
       color: black;
+      transition: 0.3s;
     }
 
     .dark {
-      background: black;
+      background: #111;
       color: white;
     }
 
+    h1 {
+      font-size: 40px;
+    }
+
+    #timer {
+      font-size: 60px;
+      margin: 20px;
+    }
+
     button {
+      padding: 12px;
       margin: 5px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    input {
       padding: 10px;
+      width: 80px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    #progress-container {
+      width: 100%;
+      background: #ccc;
+      height: 25px;
+      border-radius: 20px;
+      margin-top: 20px;
+    }
+
+    #progress-bar {
+      width: 100%;
+      height: 25px;
+      background: green;
+      border-radius: 20px;
     }
   </style>
 </head>
 
 <body>
+
   <h1>Study Timer</h1>
 
   <input id="minutes" type="number" value="25">
 
   <p id="timer">25</p>
+
+  <p id="mode">Study Mode</p>
+
   <p id="sessions">Completed Sessions: 0</p>
+
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <br>
+
   <button onclick="startTimer()">Start</button>
+
   <button onclick="pauseTimer()">Pause</button>
+
   <button onclick="resetTimer()">Reset</button>
+
   <button onclick="toggleDarkMode()">Dark Mode</button>
 
   <script src="script.js"></script>
+
 </body>
 </html>
-
-
