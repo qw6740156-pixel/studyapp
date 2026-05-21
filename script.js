@@ -85,9 +85,10 @@ function startBreak() {
 
   modeEl.innerText = "Break Mode";
 
-  time = 5;
+time =
+  parseInt(document.getElementById("breakMinutes").value) || 5;
 
-  totalTime = 5;
+totalTime = time;
 
   timerEl.innerText = time;
 
