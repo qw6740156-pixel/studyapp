@@ -1,6 +1,5 @@
-
-let time = 25;
-let totalTime = 25;
+et time = 25 * 60;
+let totalTime = 25 * 60;
 
 let interval;
 let running = false;
@@ -14,11 +13,18 @@ const sessionsEl = document.getElementById("sessions");
 const modeEl = document.getElementById("mode");
 const progressBar = document.getElementById("progress-bar");
 const minutesInput = document.getElementById("minutes");
+const breakInput =
+  document.getElementById("breakMinutes");
 
-timerEl.innerText = time;
+if (localStorage.getItem("darkMode") === "on") {
+
+  document.body.classList.add("dark");
+}
 
 sessionsEl.innerText =
   "Completed Sessions: " + sessions;
+
+updateTimerDisplay();
 
 updateProgressBar();
 
@@ -29,11 +35,14 @@ function startTimer() {
   running = true;
 
   time =
-    parseInt(minutesInput.value) || 25;
+    Math.max(
+      1,
+      parseInt(minutesInput.value) || 25
+    ) * 60;
 
   totalTime = time;
 
-  timerEl.innerText = time;
+  updateTimerDisplay();
 
   startCountdown();
 }
@@ -46,7 +55,7 @@ function startCountdown() {
 
     time--;
 
-    timerEl.innerText = time;
+    updateTimerDisplay();
 
     updateProgressBar();
 
@@ -85,12 +94,15 @@ function startBreak() {
 
   modeEl.innerText = "Break Mode";
 
-time =
-  parseInt(document.getElementById("breakMinutes").value) || 5;
+  time =
+    Math.max(
+      1,
+      parseInt(breakInput.value) || 5
+    ) * 60;
 
-totalTime = time;
+  totalTime = time;
 
-  timerEl.innerText = time;
+  updateTimerDisplay();
 
   running = true;
 
@@ -104,11 +116,14 @@ function startStudy() {
   modeEl.innerText = "Study Mode";
 
   time =
-    parseInt(minutesInput.value) || 25;
+    Math.max(
+      1,
+      parseInt(minutesInput.value) || 25
+    ) * 60;
 
   totalTime = time;
 
-  timerEl.innerText = time;
+  updateTimerDisplay();
 
   running = true;
 
@@ -133,11 +148,14 @@ function resetTimer() {
   modeEl.innerText = "Study Mode";
 
   time =
-    parseInt(minutesInput.value) || 25;
+    Math.max(
+      1,
+      parseInt(minutesInput.value) || 25
+    ) * 60;
 
   totalTime = time;
 
-  timerEl.innerText = time;
+  updateTimerDisplay();
 
   updateProgressBar();
 }
@@ -145,12 +163,50 @@ function resetTimer() {
 function toggleDarkMode() {
 
   document.body.classList.toggle("dark");
+
+  if (
+    document.body.classList.contains("dark")
+  ) {
+
+    localStorage.setItem(
+      "darkMode",
+      "on"
+    );
+
+  } else {
+
+    localStorage.setItem(
+      "darkMode",
+      "off"
+    );
+  }
+}
+
+function updateTimerDisplay() {
+
+  let minutes =
+    Math.floor(time / 60);
+
+  let seconds =
+    time % 60;
+
+  minutes =
+    String(minutes).padStart(2, "0");
+
+  seconds =
+    String(seconds).padStart(2, "0");
+
+  timerEl.innerText =
+    minutes + ":" + seconds;
 }
 
 function updateProgressBar() {
 
   let percent =
-    Math.max(0, (time / totalTime) * 100);
+    Math.max(
+      0,
+      (time / totalTime) * 100
+    );
 
   progressBar.style.width =
     percent + "%";
