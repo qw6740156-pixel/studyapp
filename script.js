@@ -1,354 +1,206 @@
-et time = 25 * 60;
+// Timer variables
+let time = 25 * 60;
 let totalTime = 25 * 60;
-
 let interval = null;
-
 let running = false;
-
 let isBreak = false;
 
-let sessions =
-  parseInt(
-    localStorage.getItem("sessions")
-  ) || 0;
+// Stats from localStorage
+let sessions = parseInt(localStorage.getItem("sessions")) || 0;
+let studyMinutes = parseInt(localStorage.getItem("studyMinutes")) || 0;
 
-let studyMinutes =
-  parseInt(
-    localStorage.getItem("studyMinutes")
-  ) || 0;
+// DOM elements
+const timerEl = document.getElementById("timer");
+const sessionsEl = document.getElementById("sessions");
+const studyTimeEl = document.getElementById("studyTime");
+const modeEl = document.getElementById("mode");
+const progressBar = document.getElementById("progress-bar");
+const minutesInput = document.getElementById("minutes");
+const breakInput = document.getElementById("breakMinutes");
+const bellSound = document.getElementById("bellSound");
+const taskInput = document.getElementById("taskInput");
+const taskList = document.getElementById("taskList");
 
-const timerEl =
-  document.getElementById("timer");
+// Tasks array
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-const sessionsEl =
-  document.getElementById("sessions");
-
-const studyTimeEl =
-  document.getElementById("studyTime");
-
-const modeEl =
-  document.getElementById("mode");
-
-const progressBar =
-  document.getElementById("progress-bar");
-
-const minutesInput =
-  document.getElementById("minutes");
-
-const breakInput =
-  document.getElementById("breakMinutes");
-
-const bellSound =
-  document.getElementById("bellSound");
-
-const taskInput =
-  document.getElementById("taskInput");
-
-const taskList =
-  document.getElementById("taskList");
-
-let tasks =
-  JSON.parse(
-    localStorage.getItem("tasks")
-  ) || [];
-
-if (
-  localStorage.getItem("darkMode") === "on"
-) {
-
+// ---------- Dark mode init ----------
+if (localStorage.getItem("darkMode") === "on") {
   document.body.classList.add("dark");
 }
 
-sessionsEl.innerText =
-  "Completed Sessions: " + sessions;
-
-studyTimeEl.innerText =
-  "Total Study Today: " +
-  studyMinutes +
-  " min";
-
+// Update UI with saved stats
+sessionsEl.innerText = "Completed Sessions: " + sessions;
+studyTimeEl.innerText = "Total Study Today: " + studyMinutes + " min";
 updateTimerDisplay();
-
 updateProgressBar();
 
-function startTimer() {
+// ---------- Timer functions ----------
+function updateTimerDisplay() {
+  let minutes = Math.floor(time / 60);
+  let seconds = time % 60;
+  minutes = String(minutes).padStart(2, "0");
+  seconds = String(seconds).padStart(2, "0");
+  timerEl.innerText = minutes + ":" + seconds;
+}
 
-  if (running) return;
+function updateProgressBar() {
+  if (totalTime <= 0) return;
+  let percent = (time / totalTime) * 100;
+  progressBar.style.width = Math.max(0, percent) + "%";
+}
 
-  running = true;
-
-  isBreak = false;
-
-  modeEl.innerText =
-    "Study Mode";
-
-  time =
-    Math.max(
-      1,
-      parseInt(minutesInput.value) || 25
-    ) * 60;
-
-  totalTime = time;
-
-  updateTimerDisplay();
-
-  startCountdown();
+function playBell() {
+  if (!bellSound) return;
+  bellSound.currentTime = 0;
+  bellSound.play().catch(e => console.log("Bell error:", e));
 }
 
 function startCountdown() {
-
   clearInterval(interval);
-
   interval = setInterval(() => {
-
-    time--;
-
-    updateTimerDisplay();
-
-    updateProgressBar();
-
+    if (!running) return;
     if (time <= 0) {
-
-bellSound.currentTime = 0;
-
-bellSound.play()
-  .then(() => {
-
-    console.log("Sound played");
-
-  })
-  .catch(error => {
-
-    console.log(error);
-
-  });
       clearInterval(interval);
-
       running = false;
+      playBell();
 
       if (!isBreak) {
-
+        // Study session completed
         sessions++;
-
-        studyMinutes +=
-          parseInt(minutesInput.value) || 25;
-
-        localStorage.setItem(
-          "sessions",
-          sessions
-        );
-
-        localStorage.setItem(
-          "studyMinutes",
-          studyMinutes
-        );
-
-        sessionsEl.innerText =
-          "Completed Sessions: " +
-          sessions;
-
-        studyTimeEl.innerText =
-          "Total Study Today: " +
-          studyMinutes +
-          " min";
-
+        let studyMins = parseInt(minutesInput.value) || 25;
+        studyMinutes += studyMins;
+        localStorage.setItem("sessions", sessions);
+        localStorage.setItem("studyMinutes", studyMinutes);
+        sessionsEl.innerText = "Completed Sessions: " + sessions;
+        studyTimeEl.innerText = "Total Study Today: " + studyMinutes + " min";
         startBreak();
-
       } else {
-
         startStudy();
       }
+      return;
     }
-
+    time--;
+    updateTimerDisplay();
+    updateProgressBar();
   }, 1000);
 }
 
-function startBreak() {
-
-  isBreak = true;
-
-  modeEl.innerText =
-    "Break Mode";
-
-  time =
-    Math.max(
-      1,
-      parseInt(breakInput.value) || 5
-    ) * 60;
-
-  totalTime = time;
-
+function startTimer() {
+  if (running) return;
   running = true;
-
+  isBreak = false;
+  modeEl.innerText = "Study Mode";
+  let mins = parseInt(minutesInput.value) || 25;
+  if (mins < 1) mins = 1;
+  time = mins * 60;
+  totalTime = time;
   updateTimerDisplay();
+  updateProgressBar();
+  startCountdown();
+}
 
+function startBreak() {
+  isBreak = true;
+  modeEl.innerText = "Break Mode";
+  let mins = parseInt(breakInput.value) || 5;
+  if (mins < 1) mins = 1;
+  time = mins * 60;
+  totalTime = time;
+  running = true;
+  updateTimerDisplay();
+  updateProgressBar();
   startCountdown();
 }
 
 function startStudy() {
-
   isBreak = false;
-
-  modeEl.innerText =
-    "Study Mode";
-
-  time =
-    Math.max(
-      1,
-      parseInt(minutesInput.value) || 25
-    ) * 60;
-
+  modeEl.innerText = "Study Mode";
+  let mins = parseInt(minutesInput.value) || 25;
+  if (mins < 1) mins = 1;
+  time = mins * 60;
   totalTime = time;
-
   running = true;
-
   updateTimerDisplay();
-
+  updateProgressBar();
   startCountdown();
 }
 
 function pauseTimer() {
-
   clearInterval(interval);
-
   running = false;
 }
 
 function resetTimer() {
-
   clearInterval(interval);
-
   running = false;
-
   isBreak = false;
-
-  modeEl.innerText =
-    "Study Mode";
-
-  time =
-    Math.max(
-      1,
-      parseInt(minutesInput.value) || 25
-    ) * 60;
-
+  modeEl.innerText = "Study Mode";
+  let mins = parseInt(minutesInput.value) || 25;
+  if (mins < 1) mins = 1;
+  time = mins * 60;
   totalTime = time;
-
   updateTimerDisplay();
-
   updateProgressBar();
 }
 
 function toggleDarkMode() {
-
   document.body.classList.toggle("dark");
-
-  if (
-    document.body.classList.contains("dark")
-  ) {
-
-    localStorage.setItem(
-      "darkMode",
-      "on"
-    );
-
+  if (document.body.classList.contains("dark")) {
+    localStorage.setItem("darkMode", "on");
   } else {
-
-    localStorage.setItem(
-      "darkMode",
-      "off"
-    );
+    localStorage.setItem("darkMode", "off");
   }
 }
 
-function updateTimerDisplay() {
-
-  let minutes =
-    Math.floor(time / 60);
-
-  let seconds =
-    time % 60;
-
-  minutes =
-    String(minutes).padStart(2, "0");
-
-  seconds =
-    String(seconds).padStart(2, "0");
-
-  timerEl.innerText =
-    minutes + ":" + seconds;
-}
-
-function updateProgressBar() {
-
-  let percent =
-    Math.max(
-      0,
-      (time / totalTime) * 100
-    );
-
-  progressBar.style.width =
-    percent + "%";
-}
-
+// ---------- Tasks (fully fixed) ----------
 function renderTasks() {
-
   taskList.innerHTML = "";
-
   tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.style.display = "flex";
+    li.style.justifyContent = "space-between";
+    li.style.alignItems = "center";
+    li.style.margin = "8px 0";
+    li.style.padding = "8px 12px";
+    li.style.background = document.body.classList.contains("dark") ? "#1e293b" : "#f1f5f9";
+    li.style.borderRadius = "40px";
 
-    const li =
-      document.createElement("li");
+    const textSpan = document.createElement("span");
+    textSpan.innerText = task;
+    textSpan.style.flex = "1";
+    textSpan.style.textAlign = "left";
 
-    const text =
-      document.createTextNode(task + " ");
-
-    const button =
-      document.createElement("button");
-
+    const button = document.createElement("button");
     button.innerText = "X";
+    button.style.background = "none";
+    button.style.border = "none";
+    button.style.fontSize = "1.2rem";
+    button.style.fontWeight = "bold";
+    button.style.color = "#ef4444";
+    button.style.cursor = "pointer";
+    button.onclick = () => deleteTask(index);
 
-    button.onclick = function () {
-
-      deleteTask(index);
-    };
-
-    li.appendChild(text);
-
+    li.appendChild(textSpan);
     li.appendChild(button);
-
     taskList.appendChild(li);
   });
 }
 
 function addTask() {
-
-  const task =
-    taskInput.value.trim();
-
+  const task = taskInput.value.trim();
   if (task === "") return;
-
   tasks.push(task);
-
-  localStorage.setItem(
-    "tasks",
-    JSON.stringify(tasks)
-  );
-
+  localStorage.setItem("tasks", JSON.stringify(tasks));
   taskInput.value = "";
-
   renderTasks();
 }
 
 function deleteTask(index) {
-
   tasks.splice(index, 1);
-
-  localStorage.setItem(
-    "tasks",
-    JSON.stringify(tasks)
-  );
-
+  localStorage.setItem("tasks", JSON.stringify(tasks));
   renderTasks();
 }
 
+// Initial render
 renderTasks();
