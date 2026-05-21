@@ -1,101 +1,157 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
   <title>Study Timer</title>
 
-  <link rel="manifest" href="manifest.json">
-
-  <meta name="theme-color" content="#000000">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1">
 
   <style>
+
     body {
+
       font-family: Arial;
+
       text-align: center;
-      padding: 30px;
+
+      padding: 20px;
+
       background: white;
+
       color: black;
+
       transition: 0.3s;
     }
 
     .dark {
+
       background: #111;
+
       color: white;
     }
 
     h1 {
+
       font-size: 40px;
     }
 
     #timer {
+
       font-size: 60px;
+
       margin: 20px;
     }
 
-button {
-  padding: 14px 20px;
-  margin: 8px;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  cursor: pointer;
-}
     input {
+
       padding: 10px;
-      width: 80px;
+
+      width: 120px;
+
       font-size: 18px;
+
       text-align: center;
+
+      margin: 5px;
+    }
+
+    button {
+
+      padding: 14px 20px;
+
+      margin: 8px;
+
+      border: none;
+
+      border-radius: 12px;
+
+      font-size: 18px;
     }
 
     #progress-container {
+
       width: 100%;
+
       background: #ccc;
+
       height: 25px;
+
       border-radius: 20px;
+
       margin-top: 20px;
     }
 
     #progress-bar {
+
       width: 100%;
+
       height: 25px;
+
       background: green;
+
       border-radius: 20px;
     }
+
   </style>
+
 </head>
 
 <body>
 
-<p>Study Minutes</p>
+  <h1>Study Timer</h1>
 
-<input id="minutes" type="number" value="25">
+  <p>Study Minutes</p>
 
-<br><br>
+  <input
+    id="minutes"
+    type="number"
+    value="25">
 
-<p>Break Minutes</p>
+  <br><br>
 
-<input id="breakMinutes" type="number" value="5">
+  <p>Break Minutes</p>
 
-  <p id="timer">25</p>
+  <input
+    id="breakMinutes"
+    type="number"
+    value="5">
+
+  <p id="timer">25:00</p>
 
   <p id="mode">Study Mode</p>
 
-  <p id="sessions">Completed Sessions: 0</p>
+  <p id="sessions">
+    Completed Sessions: 0
+  </p>
 
   <div id="progress-container">
+
     <div id="progress-bar"></div>
+
   </div>
 
   <br>
 
-  <button onclick="startTimer()">Start</button>
+  <button onclick="startTimer()">
+    Start
+  </button>
 
-  <button onclick="pauseTimer()">Pause</button>
+  <button onclick="pauseTimer()">
+    Pause
+  </button>
 
-  <button onclick="resetTimer()">Reset</button>
+  <button onclick="resetTimer()">
+    Reset
+  </button>
 
-  <button onclick="toggleDarkMode()">Dark Mode</button>
+  <button onclick="toggleDarkMode()">
+    Dark Mode
+  </button>
 
   <script src="script.js"></script>
 
 </body>
+
 </html>
