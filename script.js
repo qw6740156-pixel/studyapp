@@ -98,8 +98,19 @@ function startCountdown() {
 
     if (time <= 0) {
 
-      bellSound.play();
+bellSound.currentTime = 0;
 
+bellSound.play()
+  .then(() => {
+
+    console.log("Sound played");
+
+  })
+  .catch(error => {
+
+    console.log(error);
+
+  });
       clearInterval(interval);
 
       running = false;
