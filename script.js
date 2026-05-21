@@ -1,4 +1,4 @@
-let time = 25 * 60;
+et time = 25 * 60;
 let totalTime = 25 * 60;
 
 let interval = null;
@@ -47,7 +47,10 @@ const taskInput =
 const taskList =
   document.getElementById("taskList");
 
-let tasks = [];
+let tasks =
+  JSON.parse(
+    localStorage.getItem("tasks")
+  ) || [];
 
 if (
   localStorage.getItem("darkMode") === "on"
@@ -296,21 +299,8 @@ function renderTasks() {
     const li =
       document.createElement("li");
 
-    li.style.margin = "10px";
-
-const text =
-  document.createElement("span");
-
-text.innerText =
-  task.text;
-
-if (task.completed) {
-
-  text.style.textDecoration =
-    "line-through";
-
-  text.style.opacity = "0.6";
-}
+    const text =
+      document.createTextNode(task + " ");
 
     const button =
       document.createElement("button");
@@ -322,22 +312,8 @@ if (task.completed) {
       deleteTask(index);
     };
 
-const completeButton =
-  document.createElement("button");
-
-completeButton.innerText = "✓";
-
-completeButton.onclick = function () {
-
-  toggleTask(index);
-};
-
-li.appendChild(completeButton);
-
     li.appendChild(text);
 
-const button =
-  document.createElement("button");
     li.appendChild(button);
 
     taskList.appendChild(li);
@@ -351,12 +327,7 @@ function addTask() {
 
   if (task === "") return;
 
-tasks.push({
-
-  text: task,
-
-  completed: false
-});
+  tasks.push(task);
 
   localStorage.setItem(
     "tasks",
@@ -365,37 +336,7 @@ tasks.push({
 
   taskInput.value = "";
 
-function toggleTask(index) {
-
-  tasks[index].completed =
-    !tasks[index].completed;
-
-  localStorage.setItem(
-    "tasks",
-    JSON.stringify(tasks)
-  );
-
   renderTasks();
-}
-
-
-  renderTasks();
-}
-
-function deleteTask(index) {
-
-  tasks.splice(index, 1);
-
-  localStorage.setItem(
-    "tasks",
-    JSON.stringify(tasks)
-  );
-
-  renderTasks();
-}
-
-renderTasks();
-
 }
 
 function deleteTask(index) {
